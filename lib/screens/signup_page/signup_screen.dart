@@ -765,9 +765,9 @@ class _SignupScreenState extends State<SignupScreen> {
   Future uploadProfileImage(String filePath, String fileName, String uid,
       UserModel userModel, User user) async {
     File file = File(filePath);
-    final postID = DateTime.now().millisecondsSinceEpoch.toString();
     try {
-      Reference ref = storage.ref().child(uid).child("post_$postID");
+      Reference ref = storage.ref().child(uid).child(uid);
+      // .child("post_$postID");
       await ref.putFile(file).then((TaskSnapshot taskSnapshot) {
         if (taskSnapshot.state == TaskState.success) {
           taskSnapshot.ref.getDownloadURL().then((downloadURL) {
