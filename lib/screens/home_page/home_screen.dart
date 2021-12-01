@@ -153,26 +153,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     // ! Update Button
-    final updateButton = ElevatedButton(
-      onPressed: () {},
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Text(
-          "update".tr,
-          style: const TextStyle(fontSize: 18),
-        ),
-      ),
-      style: ButtonStyle(
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        backgroundColor: MaterialStateProperty.all(
-          const Color(0xFF1cbb7c),
-        ),
-      ),
-    );
+    // final updateButton = ;
+
+    Future updateUserData(String fName, String lName) async {
+      return await FirebaseFirestore.instance
+          .collection("users")
+          .doc(loggedInUser.uid)
+          .update({'firstName': fName, 'lastName': lName});
+    }
+
     return loading
         ? const Loading()
         : Scaffold(
@@ -263,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           height: 80,
                                         ),
                                         Text(
-                                          "${loggedInUser.firstName} ${loggedInUser.lastName}",
+                                          "${loggedInUser.firstName ?? "Loading..."} ${loggedInUser.lastName ?? ""}",
                                           style: const TextStyle(
                                             color: Color(0xFF1cbb7c),
                                             fontSize: 37,
@@ -274,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           height: 5,
                                         ),
                                         Text(
-                                          "${loggedInUser.email}",
+                                          loggedInUser.email ?? "",
                                           style: TextStyle(
                                             color:
                                                 theme.focusColor == Colors.white
@@ -437,7 +426,52 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               const EdgeInsets
                                                                       .only(
                                                                   top: 16.0),
-                                                          child: updateButton,
+                                                          child: ElevatedButton(
+                                                            onPressed: () {
+                                                              updateUserData(
+                                                                newFirstNameController
+                                                                    .text,
+                                                                newLastNameController
+                                                                    .text,
+                                                              );
+                                                              Navigator
+                                                                  .pushNamed(
+                                                                context,
+                                                                HomeScreen.id,
+                                                              );
+                                                            },
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .all(
+                                                                      12.0),
+                                                              child: Text(
+                                                                "update".tr,
+                                                                style:
+                                                                    const TextStyle(
+                                                                        fontSize:
+                                                                            18),
+                                                              ),
+                                                            ),
+                                                            style: ButtonStyle(
+                                                              shape:
+                                                                  MaterialStateProperty
+                                                                      .all(
+                                                                RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                              ),
+                                                              backgroundColor:
+                                                                  MaterialStateProperty
+                                                                      .all(
+                                                                const Color(
+                                                                    0xFF1cbb7c),
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ],

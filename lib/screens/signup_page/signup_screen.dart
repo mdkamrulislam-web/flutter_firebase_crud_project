@@ -24,6 +24,9 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  // ! Password Visibility
+  bool isHidden = true;
+
   // ! Loading
   bool loading = false;
 
@@ -260,7 +263,7 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Icon(
               _isHidden ? Icons.visibility_off : Icons.visibility,
               size: 20,
-              color: const Color(0xFF1cbb7c),
+              color: _isHidden ? Colors.grey : const Color(0xFF1cbb7c),
             ),
           ),
         ),
@@ -287,7 +290,7 @@ class _SignupScreenState extends State<SignupScreen> {
         color: theme.focusColor == Colors.white ? Colors.white : Colors.black,
       ),
       cursorColor: const Color(0xFF1cbb7c),
-      obscureText: _isConPassHidden,
+      obscureText: _isHidden,
       decoration: InputDecoration(
         labelText: "confirmPass".tr,
         floatingLabelStyle: const TextStyle(
@@ -325,7 +328,7 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Icon(
               _isConPassHidden ? Icons.visibility_off : Icons.visibility,
               size: 20,
-              color: const Color(0xFF1cbb7c),
+              color: _isHidden ? Colors.grey : const Color(0xFF1cbb7c),
             ),
           ),
         ),
