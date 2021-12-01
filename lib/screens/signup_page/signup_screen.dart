@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/models/user_model.dart';
 // import 'package:flutter_firebase_crud_project/models/user_model.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
+import 'package:flutter_firebase_crud_project/shared/loading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,6 +25,9 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  // ! Loading
+  bool loading = false;
+
   // ! Firebase Auth
   final auth = FirebaseAuth.instance;
 
@@ -55,6 +59,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print("LOADING: $loading");
     final theme = Theme.of(context);
     Size size = MediaQuery.of(context).size;
     double textFormFieldPadding = 8;
@@ -214,6 +219,7 @@ class _SignupScreenState extends State<SignupScreen> {
     );
     // ! Password Field
     final passwordField = TextFormField(
+      textInputAction: TextInputAction.next,
       style: TextStyle(
         color: theme.focusColor == Colors.white ? Colors.white : Colors.black,
       ),
@@ -276,7 +282,6 @@ class _SignupScreenState extends State<SignupScreen> {
       onSaved: (value) {
         passwordController.text = value!;
       },
-      textInputAction: TextInputAction.next,
     );
     // ! Confrim Password Field
     final confirmPassField = TextFormField(
@@ -341,279 +346,163 @@ class _SignupScreenState extends State<SignupScreen> {
       textInputAction: TextInputAction.done,
     );
 
-    return Scaffold(
-      // ! App Bar
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leadingWidth: 500,
-        leading: Padding(
-          padding: const EdgeInsets.only(top: 16.0, right: 8),
-          child: TextButton.icon(
-            onPressed: () {
-              setState(() {
-                // ignore: avoid_print
-                print("Going Back!");
-                Navigator.pop(context);
-              });
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios_new,
-              color: Color(0xFF1cbb7c),
-            ),
-            label: GestureDetector(
-              onTap: () {
-                setState(() {
-                  // ignore: avoid_print
-                  print("Going Back!");
-                  Navigator.pop(context);
-                });
-              },
-              child: Text(
-                "back".tr,
-                style: const TextStyle(
-                  color: Color(0xFF1ABB7B),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ),
-        title: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: Text(
-              "welcome".tr,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: theme.focusColor == Colors.white
-                    ? Colors.white
-                    : Colors.black,
-              ),
-            ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: IconButton(
-              splashRadius: 20,
-              icon: Icon(
-                Icons.brightness_4_rounded,
-                color: theme.focusColor,
-              ),
-              onPressed: () {
-                currentTheme.toggleTheme();
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: TextButton(
-              onPressed: () {
-                setState(() {
-                  // ignore: avoid_print
-                  print("Showing Info!");
-                  Navigator.pushNamed(context, InfoScreen.id);
-                });
-              },
-              child: Text(
-                "info".tr,
-                style: const TextStyle(
-                  color: Color(0xFF1ABB7B),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 16, left: 16.0, right: 16.0),
-          child: ListView(
-            children: [
-              Text(
-                "signUp".tr,
-                style: TextStyle(
-                    fontSize: size.width / 12, fontWeight: FontWeight.bold),
-              ),
-              // ? Setting Profile Photo
-              Center(
-                child: Stack(
-                  children: [
-                    _image == null
-                        ? const Icon(
-                            Icons.account_circle_sharp,
-                            size: 120,
-                            color: Color(0xffcdd8dd),
-                          )
-                        : CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            radius: 60,
-                            child: _image == null
-                                ? Image.asset('assets/images/transparent.png')
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFf3f3f3),
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: FileImage(
-                                          File(
-                                            _image!.path,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                          ),
-                    Positioned(
-                      bottom: 8,
-                      right: 8,
-                      child: InkWell(
-                        onTap: () {
-                          _showSelectedImageDialog();
-                        },
-                        child: SizedBox(
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: size.width / 25.0,
-                            child: Center(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 4.0, bottom: 2),
-                                child: FaIcon(
-                                  FontAwesomeIcons.edit,
-                                  size: size.width / 22.5,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+    return loading
+        ? const Loading()
+        : Scaffold(
+            // ! App Bar
+            appBar: AppBar(
+              centerTitle: true,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leadingWidth: 500,
+              leading: Padding(
+                padding: const EdgeInsets.only(top: 16.0, right: 8),
+                child: TextButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      // ignore: avoid_print
+                      print("Going Back!");
+                      Navigator.pop(context);
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Color(0xFF1cbb7c),
+                  ),
+                  label: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        // ignore: avoid_print
+                        print("Going Back!");
+                        Navigator.pop(context);
+                      });
+                    },
+                    child: Text(
+                      "back".tr,
+                      style: const TextStyle(
+                        color: Color(0xFF1ABB7B),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
-              SizedBox(
-                height: size.height / 60,
-              ),
-              // ? Signup Form
-              Form(
-                key: _formKey,
+              title: Center(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Column(
-                    children: [
-                      // ! First Name Field
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: textFormFieldPadding),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: theme.focusColor == Colors.white
-                                  ? Colors.grey.shade900
-                                  : const Color(0x0fffffff),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: firstNameField,
-                        ),
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: Text(
+                    "welcome".tr,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: theme.focusColor == Colors.white
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: IconButton(
+                    splashRadius: 20,
+                    icon: Icon(
+                      Icons.brightness_4_rounded,
+                      color: theme.focusColor,
+                    ),
+                    onPressed: () {
+                      currentTheme.toggleTheme();
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        // ignore: avoid_print
+                        print("Showing Info!");
+                        Navigator.pushNamed(context, InfoScreen.id);
+                      });
+                    },
+                    child: Text(
+                      "info".tr,
+                      style: const TextStyle(
+                        color: Color(0xFF1ABB7B),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                      // ! Last Name Field
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: textFormFieldPadding),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: theme.focusColor == Colors.white
-                                  ? Colors.grey.shade900
-                                  : const Color(0x0fffffff),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: lastNameField,
-                        ),
-                      ),
-                      // ! Email Field
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: textFormFieldPadding),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: theme.focusColor == Colors.white
-                                  ? Colors.grey.shade900
-                                  : const Color(0x0fffffff),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: emailField,
-                        ),
-                      ),
-                      // ! Password Field
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: textFormFieldPadding),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: theme.focusColor == Colors.white
-                                  ? Colors.grey.shade900
-                                  : const Color(0x0fffffff),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: passwordField,
-                        ),
-                      ),
-                      // ! Confirm Password Field
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: textFormFieldPadding),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: theme.focusColor == Colors.white
-                                  ? Colors.grey.shade900
-                                  : const Color(0x0fffffff),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: confirmPassField,
-                        ),
-                      ),
-                      // ! Sign Up Button
-                      Row(
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            body: SafeArea(
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(top: 16, left: 16.0, right: 16.0),
+                child: ListView(
+                  children: [
+                    Text(
+                      "signUp".tr,
+                      style: TextStyle(
+                          fontSize: size.width / 12,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    // ? Setting Profile Photo
+                    Center(
+                      child: Stack(
                         children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 16.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate() &&
-                                      imagePath != "") {
-                                    signUp(emailController.text,
-                                        passwordController.text);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        duration: Duration(seconds: 2),
-                                        content: Text("Processing Data"),
-                                      ),
-                                    );
-                                  } else {
-                                    Fluttertoast.showToast(
-                                        msg: "No Photo was selected!");
-                                  }
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Text(
-                                    "continueToCreate".tr,
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
+                          _image == null
+                              ? const Icon(
+                                  Icons.account_circle_sharp,
+                                  size: 120,
+                                  color: Color(0xffcdd8dd),
+                                )
+                              : CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  radius: 60,
+                                  child: _image == null
+                                      ? Image.asset(
+                                          'assets/images/transparent.png')
+                                      : Container(
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFf3f3f3),
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: FileImage(
+                                                File(
+                                                  _image!.path,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                 ),
-                                style: ButtonStyle(
-                                  shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                          Positioned(
+                            bottom: 8,
+                            right: 8,
+                            child: InkWell(
+                              onTap: () {
+                                _showSelectedImageDialog();
+                              },
+                              child: SizedBox(
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: size.width / 25.0,
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 4.0, bottom: 2),
+                                      child: FaIcon(
+                                        FontAwesomeIcons.edit,
+                                        size: size.width / 22.5,
+                                        color: Colors.black,
+                                      ),
                                     ),
-                                  ),
-                                  backgroundColor: MaterialStateProperty.all(
-                                    const Color(0xFF1cbb7c),
                                   ),
                                 ),
                               ),
@@ -621,49 +510,184 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ],
                       ),
-
-                      // ! Terms & Conditions
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    ),
+                    SizedBox(
+                      height: size.height / 60,
+                    ),
+                    // ? Signup Form
+                    Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Column(
                           children: [
-                            Text(
-                              "iAgreeTo".tr,
-                              style: const TextStyle(
-                                color: Color(0xFF899cad),
-                                fontWeight: FontWeight.bold,
+                            // ! First Name Field
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: textFormFieldPadding),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: theme.focusColor == Colors.white
+                                        ? Colors.grey.shade900
+                                        : const Color(0x0fffffff),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: firstNameField,
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  // ignore: avoid_print
-                                  print("Showing Terms and Conditions");
-                                  Navigator.pushNamed(
-                                      context, TermsConditionsScreen.id);
-                                });
-                              },
-                              child: Text(
-                                "termsConditions".tr,
-                                style: const TextStyle(
-                                  color: Color(0xFF1cbb7c),
-                                  fontWeight: FontWeight.bold,
+                            // ! Last Name Field
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: textFormFieldPadding),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: theme.focusColor == Colors.white
+                                        ? Colors.grey.shade900
+                                        : const Color(0x0fffffff),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: lastNameField,
+                              ),
+                            ),
+                            // ! Email Field
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: textFormFieldPadding),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: theme.focusColor == Colors.white
+                                        ? Colors.grey.shade900
+                                        : const Color(0x0fffffff),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: emailField,
+                              ),
+                            ),
+                            // ! Password Field
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: textFormFieldPadding),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: theme.focusColor == Colors.white
+                                        ? Colors.grey.shade900
+                                        : const Color(0x0fffffff),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: passwordField,
+                              ),
+                            ),
+                            // ! Confirm Password Field
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: textFormFieldPadding),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: theme.focusColor == Colors.white
+                                        ? Colors.grey.shade900
+                                        : const Color(0x0fffffff),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: confirmPassField,
+                              ),
+                            ),
+                            // ! Sign Up Button
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 16.0),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // ignore: avoid_print
+                                        print(imagePath);
+                                        if (_formKey.currentState!.validate() &&
+                                            imagePath != "") {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          signUp(emailController.text,
+                                              passwordController.text);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              duration: Duration(seconds: 2),
+                                              content: Text("Processing Data"),
+                                            ),
+                                          );
+                                        } else {
+                                          if (imagePath == "") {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                            Fluttertoast.showToast(
+                                                msg: "No Photo was selected!");
+                                          }
+                                        }
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Text(
+                                          "continueToCreate".tr,
+                                          style: const TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                      style: ButtonStyle(
+                                        shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                          const Color(0xFF1cbb7c),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
+                              ],
+                            ),
+
+                            // ! Terms & Conditions
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "iAgreeTo".tr,
+                                    style: const TextStyle(
+                                      color: Color(0xFF899cad),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        // ignore: avoid_print
+                                        print("Showing Terms and Conditions");
+                                        Navigator.pushNamed(
+                                            context, TermsConditionsScreen.id);
+                                      });
+                                    },
+                                    child: Text(
+                                      "termsConditions".tr,
+                                      style: const TextStyle(
+                                        color: Color(0xFF1cbb7c),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   Function? _showSelectedImageDialog() {
@@ -687,6 +711,18 @@ class _SignupScreenState extends State<SignupScreen> {
               },
               child: const Text(
                 "Choose From Gallery",
+              ),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                setState(() {
+                  _image = null;
+                  imagePath = "";
+                });
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "Remove Photo",
               ),
             ),
           ],
@@ -724,6 +760,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 postDetailsToFirestore(),
               })
           .catchError((e) {
+        setState(() {
+          loading = false;
+        });
         Fluttertoast.showToast(
           msg: errorMessage(
             e.toString(),

@@ -20,6 +20,9 @@ class LocaleString extends Translations {
           'continueToCreate': 'Continue To Create',
           'iAgreeTo': 'I agree to ',
           'termsConditions': 'the terms & conditions',
+          'myProfile': 'My Profile',
+          'deleteProfile': 'Delete Profile',
+          'update': 'Update',
         },
         'bn_BD': {
           'welcome': 'স্বাগতম',
@@ -38,6 +41,9 @@ class LocaleString extends Translations {
           'continueToCreate': 'তৈরি করা চালিয়ে যান',
           'iAgreeTo': 'আমি একমত, ',
           'termsConditions': 'সর্তাবলিগুলোতে',
+          'myProfile': 'আমার প্রোফাইল',
+          'deleteProfile': 'প্রোফাইল মুছুন',
+          'update': 'আপডেট করুন',
         }
       };
 }

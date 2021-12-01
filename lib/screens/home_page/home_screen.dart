@@ -6,6 +6,7 @@ import 'package:flutter_firebase_crud_project/models/user_model.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/shared/loading.dart';
+import 'package:flutter_firebase_crud_project/theme/theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
@@ -20,6 +21,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // ! Loading
+  bool loading = false;
+
   final _formKey = GlobalKey<FormState>();
   // final auth = FirebaseAuth.instance;
   User? user = FirebaseAuth.instance.currentUser;
@@ -44,7 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // String? url = "";
     double height = MediaQuery.of(context).size.height;
 
     // ! First Name Field
@@ -154,11 +157,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // ! Update Button
     final updateButton = ElevatedButton(
       onPressed: () {},
-      child: const Padding(
-        padding: EdgeInsets.all(12.0),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
         child: Text(
-          "Upadate",
-          style: TextStyle(fontSize: 18),
+          "update".tr,
+          style: const TextStyle(fontSize: 18),
         ),
       ),
       style: ButtonStyle(
@@ -172,242 +175,328 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-    return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: const Text(
-          "My Profile",
-          style: TextStyle(
-            color: Color(0xFF1cbb7c),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, LoginScreen.id);
-              // authController.logout(context);
-            },
-            icon: const Icon(Icons.logout),
-            color: const Color(0xFF1cbb7c),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 34),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      // decoration: BoxDecoration(color: Colors.grey),
-                      height: height * 0.43,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: Colors.white,
-                              ),
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 80,
-                                  ),
-                                  Text(
-                                    "${loggedInUser.firstName} ${loggedInUser.lastName}",
-                                    style: const TextStyle(
-                                      color: Color(0xFF1cbb7c),
-                                      fontSize: 37,
-                                      fontWeight: FontWeight.bold,
+    return loading
+        ? const Loading()
+        : Scaffold(
+            appBar: AppBar(
+              leading: const Padding(
+                padding: EdgeInsets.only(top: 16.0),
+                child: Icon(
+                  Icons.arrow_back_ios_new_sharp,
+                  color: Colors.transparent,
+                ),
+              ),
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              title: Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  "myProfile".tr,
+                  style: const TextStyle(
+                    color: Color(0xFF1cbb7c),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              centerTitle: true,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: IconButton(
+                    splashRadius: 20,
+                    icon: Icon(
+                      Icons.brightness_4_rounded,
+                      color: theme.focusColor,
+                    ),
+                    onPressed: () {
+                      currentTheme.toggleTheme();
+                    },
+                  ),
+                ),
+                // ! Logout Button
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0, right: 8),
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        loading = true;
+                      });
+                      Navigator.pushNamed(context, LoginScreen.id);
+                      FirebaseAuth.instance.signOut().then((value) => {
+                            Fluttertoast.showToast(msg: "Logged Out!"),
+                          });
+                    },
+                    icon: const Icon(Icons.logout),
+                    color: const Color(0xFF1cbb7c),
+                  ),
+                ),
+              ],
+            ),
+            body: Column(
+              children: [
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 34),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            // decoration: BoxDecoration(color: Colors.grey),
+                            height: height * 0.43,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      color: theme.focusColor == Colors.white
+                                          ? Colors.grey.shade800
+                                          : Colors.grey.shade200,
+                                      // Colors.white,
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "${loggedInUser.email}",
-                                    style: TextStyle(
-                                      color: Colors.grey.shade400,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 80,
+                                        ),
+                                        Text(
+                                          "${loggedInUser.firstName} ${loggedInUser.lastName}",
+                                          style: const TextStyle(
+                                            color: Color(0xFF1cbb7c),
+                                            fontSize: 37,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          "${loggedInUser.email}",
+                                          style: TextStyle(
+                                            color:
+                                                theme.focusColor == Colors.white
+                                                    ? Colors.grey.shade400
+                                                    : Colors.black54,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
 
-                                  // ! Delete Button
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      await FirebaseStorage.instance
-                                          .ref()
-                                          .child(loggedInUser.uid!)
-                                          .child(loggedInUser.uid!)
-                                          .delete()
-                                          .then((value) => {
-                                                Fluttertoast.showToast(
-                                                    msg: "Image Deleted!"),
+                                        // ! Delete Button
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 16.0),
+                                          child: ElevatedButton(
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                theme.focusColor == Colors.white
+                                                    ? Colors.grey.shade300
+                                                    : Colors.red,
+                                              ),
+                                            ),
+                                            onPressed: () async {
+                                              setState(() {
+                                                loading = true;
                                               });
-                                      await FirebaseFirestore.instance
-                                              .collection("users")
-                                              .doc(loggedInUser.uid)
-                                              .delete()
-                                              .then((value) {
-                                            Navigator.pushNamed(
-                                                context, LoginScreen.id);
-                                            Fluttertoast.showToast(
-                                                msg: "Your Accout is Deleted!");
-                                          }) ??
-                                          '';
-                                      await FirebaseAuth.instance.currentUser!
-                                          .delete();
-                                    },
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8),
-                                      child: Text(
-                                        "Delete Account",
-                                      ),
+                                              await FirebaseStorage.instance
+                                                  .ref()
+                                                  .child(loggedInUser.uid!)
+                                                  .child(loggedInUser.uid!)
+                                                  .delete()
+                                                  .then((value) => {
+                                                        Fluttertoast.showToast(
+                                                            msg:
+                                                                "Image Deleted!"),
+                                                      });
+                                              await FirebaseFirestore.instance
+                                                      .collection("users")
+                                                      .doc(loggedInUser.uid)
+                                                      .delete()
+                                                      .then((value) {
+                                                    Navigator.pushNamed(context,
+                                                        LoginScreen.id);
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Your Accout is Deleted!");
+                                                  }) ??
+                                                  '';
+                                              await FirebaseAuth
+                                                  .instance.currentUser!
+                                                  .delete();
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8),
+                                              child: Text(
+                                                "deleteProfile".tr,
+                                                style: TextStyle(
+                                                    color: theme.focusColor ==
+                                                            Colors.white
+                                                        ? Colors.red
+                                                        : Colors.grey.shade300,
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.w900),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: 110,
-                            right: 20,
-                            child: IconButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  backgroundColor: Colors.transparent,
-                                  context: context,
-                                  builder: (context) => Container(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20),
-                                      ),
-                                    ),
-                                    // color: Color(0xFF737373),
-                                    height: MediaQuery.of(context).size.height,
-                                    child: Form(
-                                      key: _formKey,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16.0, vertical: 16),
-                                        child: Column(
-                                          children: [
-                                            // ! First Name Field
-                                            Padding(
+                                ),
+                                Positioned(
+                                  top: 110,
+                                  right: 10,
+                                  // ! Setting Button
+                                  child: IconButton(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        backgroundColor: Colors.transparent,
+                                        context: context,
+                                        builder: (context) => Container(
+                                          decoration: BoxDecoration(
+                                            color:
+                                                theme.focusColor == Colors.white
+                                                    ? Colors.grey.shade900
+                                                    : Colors.white,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(20),
+                                              topRight: Radius.circular(20),
+                                            ),
+                                          ),
+                                          // color: Color(0xFF737373),
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          child: Form(
+                                            key: _formKey,
+                                            child: Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
+                                                      horizontal: 16.0,
                                                       vertical: 16),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: theme.focusColor ==
-                                                            Colors.white
-                                                        ? Colors.grey.shade900
-                                                        : const Color(
-                                                            0x0fffffff),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: firstNameField,
-                                              ),
-                                            ),
-                                            // ! Last Name Field
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 16),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: theme.focusColor ==
-                                                            Colors.white
-                                                        ? Colors.grey.shade900
-                                                        : const Color(
-                                                            0x0fffffff),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: lastNameField,
-                                              ),
-                                            ),
-                                            // ! Update Button
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 16.0),
-                                                    child: updateButton,
+                                              child: Column(
+                                                children: [
+                                                  // ! First Name Field
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 16),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color:
+                                                              theme.focusColor ==
+                                                                      Colors
+                                                                          .white
+                                                                  ? Colors.grey
+                                                                      .shade900
+                                                                  : const Color(
+                                                                      0x0fffffff),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10)),
+                                                      child: firstNameField,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                  // ! Last Name Field
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 16),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color:
+                                                              theme.focusColor ==
+                                                                      Colors
+                                                                          .white
+                                                                  ? Colors.grey
+                                                                      .shade900
+                                                                  : const Color(
+                                                                      0x0fffffff),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10)),
+                                                      child: lastNameField,
+                                                    ),
+                                                  ),
+                                                  // ! Update Button
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 16.0),
+                                                          child: updateButton,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.settings,
+                                      size: 30,
+                                    ),
+                                    color: const Color(0xFF1cbb7c),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 20,
+                                  left: 10,
+                                  right: 10,
+                                  child: Center(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(200),
+                                      child: loggedInUser.profileImagePath ==
+                                              null
+                                          ? const Loading()
+                                          : CachedNetworkImage(
+                                              width: 150,
+                                              height: 150,
+                                              fit: BoxFit.fitWidth,
+                                              imageUrl: loggedInUser
+                                                  .profileImagePath!,
+                                              placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(
+                                                strokeWidth: 4.0,
+                                              ),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(Icons.error),
+                                            ),
                                     ),
                                   ),
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.settings,
-                                size: 30,
-                              ),
-                              color: Colors.grey[700],
+                                ),
+                              ],
                             ),
                           ),
-                          Positioned(
-                            top: 35,
-                            left: 10,
-                            right: 10,
-                            child: Center(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(200),
-                                child: loggedInUser.profileImagePath == null
-                                    ? const Loading()
-                                    : CachedNetworkImage(
-                                        width: 150,
-                                        height: 150,
-                                        fit: BoxFit.fitWidth,
-                                        imageUrl:
-                                            loggedInUser.profileImagePath!,
-                                        placeholder: (context, url) =>
-                                            const CircularProgressIndicator(
-                                          strokeWidth: 4.0,
-                                        ),
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
-                                      ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 }

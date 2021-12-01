@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/forgot_password_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/signup_page/signup_screen.dart';
+import 'package:flutter_firebase_crud_project/shared/loading.dart';
 import 'package:flutter_firebase_crud_project/theme/theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // ! Loading
+  bool loading = false;
+
   // ! Firebase Auth
   final auth = FirebaseAuth.instance;
 
@@ -217,12 +221,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final loginButton = ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
+          setState(() {
+            loading = true;
+          });
           signIn(emailController.text, passwordController.text);
-          // authController.login(
-          //   emailController.text.trim().toLowerCase(),
-          //   passwordController.text.trim(),
-          //   context,
-          // );
+          // setState(() {
+          //   loading = false;
+          // });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               duration: Duration(seconds: 2),
@@ -310,186 +315,184 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-    return
-        // loading
-        // ? const Loading()
-        // :
-        Scaffold(
-      // ! App Bar
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        toolbarHeight: 50.0,
-        elevation: 0,
-        leadingWidth: 200,
-        leading: Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: GestureDetector(
-            onTap: () {
-              buildDialog(context);
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, top: 16),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.language,
-                    color: Color(0xFF1cbb7c),
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    langauge,
-                    style: const TextStyle(
-                      color: Color(0xFF1cbb7c),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+    return loading
+        ? const Loading()
+        : Scaffold(
+            // ! App Bar
+            appBar: AppBar(
+              centerTitle: true,
+              backgroundColor: Colors.transparent,
+              toolbarHeight: 50.0,
+              elevation: 0,
+              leadingWidth: 200,
+              leading: Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: GestureDetector(
+                  onTap: () {
+                    buildDialog(context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16.0, top: 16),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.language,
+                          color: Color(0xFF1cbb7c),
+                        ),
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        Text(
+                          langauge,
+                          style: const TextStyle(
+                            color: Color(0xFF1cbb7c),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0, top: 16.0),
-            child: IconButton(
-              splashRadius: 20,
-              icon: Icon(
-                Icons.brightness_4_rounded,
-                color: theme.focusColor,
-              ),
-              onPressed: () {
-                currentTheme.toggleTheme();
-              },
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-          ),
-          child: SizedBox(
-            height: size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Center(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 00.0),
-                        child: Text(
-                          'welcome'.tr,
-                          style: const TextStyle(
-                              fontSize: 32, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Text(
-                        'toApplication'.tr,
-                        style: const TextStyle(
-                            fontSize: 32, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
                 ),
-
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      // ! Email Field
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: textFormFieldPadding),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: theme.focusColor == Colors.white
-                                  ? Colors.grey.shade900
-                                  : const Color(0x0fffffff),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: emailField,
-                        ),
-                      ),
-                      // ! Password Field
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: textFormFieldPadding),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: theme.focusColor == Colors.white
-                                  ? Colors.grey.shade900
-                                  : const Color(0x0fffffff),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: passwordField,
-                        ),
-                      ),
-                      // ! Login Button
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 24.0),
-                              child: loginButton,
-                            ),
-                          ),
-                        ],
-                      ),
-                      // ! Sign Up With Google Button
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: signUpWithGoogleButton,
-                      ),
-                      // ! Forget Password
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              // ignore: avoid_print
-                              print("Showing Forgot Password Options");
-                              Navigator.pushNamed(
-                                  context, ForgotPasswordScreen.id);
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 12.0),
-                            child: Text(
-                              "forgotPass".tr,
-                              style: const TextStyle(
-                                color: Color(0xFF1cbb7c),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // ! Sign Up Button
+              ),
+              actions: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: signUpButton,
-                      ),
-                    ],
+                  padding: const EdgeInsets.only(right: 16.0, top: 16.0),
+                  child: IconButton(
+                    splashRadius: 20,
+                    icon: Icon(
+                      Icons.brightness_4_rounded,
+                      color: theme.focusColor,
+                    ),
+                    onPressed: () {
+                      currentTheme.toggleTheme();
+                    },
                   ),
                 ),
-                const SizedBox(),
               ],
             ),
-          ),
-        ),
-      ),
-    );
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                ),
+                child: SizedBox(
+                  height: size.height,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 00.0),
+                              child: Text(
+                                'welcome'.tr,
+                                style: const TextStyle(
+                                    fontSize: 32, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Text(
+                              'toApplication'.tr,
+                              style: const TextStyle(
+                                  fontSize: 32, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            // ! Email Field
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: textFormFieldPadding),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: theme.focusColor == Colors.white
+                                        ? Colors.grey.shade900
+                                        : const Color(0x0fffffff),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: emailField,
+                              ),
+                            ),
+                            // ! Password Field
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: textFormFieldPadding),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: theme.focusColor == Colors.white
+                                        ? Colors.grey.shade900
+                                        : const Color(0x0fffffff),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: passwordField,
+                              ),
+                            ),
+                            // ! Login Button
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 24.0),
+                                    child: loginButton,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // ! Sign Up With Google Button
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: signUpWithGoogleButton,
+                            ),
+                            // ! Forget Password
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    // ignore: avoid_print
+                                    print("Showing Forgot Password Options");
+                                    Navigator.pushNamed(
+                                        context, ForgotPasswordScreen.id);
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 12.0),
+                                  child: Text(
+                                    "forgotPass".tr,
+                                    style: const TextStyle(
+                                      color: Color(0xFF1cbb7c),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // ! Sign Up Button
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: signUpButton,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
   }
 
   void _togglePasswordVisibility() {
@@ -507,6 +510,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.pushNamed(context, HomeScreen.id),
               })
           .catchError((e) {
+        setState(() {
+          loading = false;
+        });
         Fluttertoast.showToast(
           msg: errorMessage(
             e.toString(),
@@ -516,7 +522,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  String errorMessage(String? e) {
+  errorMessage(String e) {
     if (e ==
         "[firebase_auth/user-not-found] There is no user record corresponding to this identifier. The user may have been deleted.") {
       return "There is no user record corresponding to this identifier. The user may have been deleted.";
@@ -526,6 +532,9 @@ class _LoginScreenState extends State<LoginScreen> {
     } else if (e ==
         "[firebase_auth/email-already-in-use] The email address is already in use by another account.") {
       return "The email address is already in use by another account.";
+    } else if (e ==
+        "[firebase_auth/too-many-requests] We have blocked all requests from this device due to unusual activity. Try again later.") {
+      return "You have tried too many times with wrong email or password. Try again later with right email and password!";
     } else {
       return "";
     }
