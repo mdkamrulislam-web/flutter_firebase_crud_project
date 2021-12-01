@@ -9,7 +9,6 @@ import 'package:flutter_firebase_crud_project/shared/loading.dart';
 import 'package:flutter_firebase_crud_project/theme/theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-// import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -25,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool loading = false;
 
   final _formKey = GlobalKey<FormState>();
-  // final auth = FirebaseAuth.instance;
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
 
@@ -244,7 +242,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SizedBox(
-                            // decoration: BoxDecoration(color: Colors.grey),
                             height: height * 0.43,
                             child: Stack(
                               fit: StackFit.expand,
@@ -259,7 +256,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       color: theme.focusColor == Colors.white
                                           ? Colors.grey.shade800
                                           : Colors.grey.shade200,
-                                      // Colors.white,
                                     ),
                                     child: Column(
                                       children: [
@@ -376,7 +372,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                               topRight: Radius.circular(20),
                                             ),
                                           ),
-                                          // color: Color(0xFF737373),
                                           height: MediaQuery.of(context)
                                               .size
                                               .height,

@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/models/user_model.dart';
-// import 'package:flutter_firebase_crud_project/models/user_model.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
 import 'package:flutter_firebase_crud_project/shared/loading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -59,7 +58,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print("LOADING: $loading");
     final theme = Theme.of(context);
     Size size = MediaQuery.of(context).size;
     double textFormFieldPadding = 8;
@@ -727,10 +725,12 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ],
           cancelButton: CupertinoActionSheetAction(
-            child: const Text("Cancel",
-                style: TextStyle(
-                  color: Colors.red,
-                )),
+            child: const Text(
+              "Cancel",
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -806,7 +806,6 @@ class _SignupScreenState extends State<SignupScreen> {
     File file = File(filePath);
     try {
       Reference ref = storage.ref().child(uid).child(uid);
-      // .child("post_$postID");
       await ref.putFile(file).then((TaskSnapshot taskSnapshot) {
         if (taskSnapshot.state == TaskState.success) {
           taskSnapshot.ref.getDownloadURL().then((downloadURL) {

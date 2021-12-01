@@ -225,9 +225,6 @@ class _LoginScreenState extends State<LoginScreen> {
             loading = true;
           });
           signIn(emailController.text, passwordController.text);
-          // setState(() {
-          //   loading = false;
-          // });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               duration: Duration(seconds: 2),
