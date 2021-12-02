@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
+import 'package:flutter_firebase_crud_project/screens/splash_screen/splash.dart';
 import 'package:get/get.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/login_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/signup_page/info_screen.dart';
@@ -54,17 +54,14 @@ class _MyAppState extends State<MyApp> {
       },
       child: GetMaterialApp(
         // ! Theme Settings
-        theme: CustomTheme.lightTheme,
+        theme: CustomTheme.darkTheme,
         darkTheme: CustomTheme.darkTheme,
         themeMode: currentTheme.currentTheme,
         debugShowCheckedModeBanner: false,
-        initialRoute:
-            // LoginScreen.id,
-            FirebaseAuth.instance.currentUser == null
-                ? LoginScreen.id
-                : HomeScreen.id,
+        initialRoute: Splash.id,
+
         routes: {
-          // ! Task 4
+          Splash.id: (context) => const Splash(),
           LoginScreen.id: (context) => const LoginScreen(),
           ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
           SignupScreen.id: (context) => const SignupScreen(),

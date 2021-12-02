@@ -450,17 +450,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   top: 16.0),
                                                           child: ElevatedButton(
                                                             onPressed: () {
-                                                              updateUserData(
-                                                                newFirstNameController
-                                                                    .text,
-                                                                newLastNameController
-                                                                    .text,
-                                                              );
-                                                              Navigator
-                                                                  .pushNamed(
-                                                                context,
-                                                                HomeScreen.id,
-                                                              );
+                                                              if (_formKey
+                                                                  .currentState!
+                                                                  .validate()) {
+                                                                updateUserData(
+                                                                  newFirstNameController
+                                                                      .text,
+                                                                  newLastNameController
+                                                                      .text,
+                                                                );
+                                                                Navigator
+                                                                    .pushNamed(
+                                                                  context,
+                                                                  HomeScreen.id,
+                                                                );
+                                                              }
                                                             },
                                                             child: Padding(
                                                               padding:
@@ -519,7 +523,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Center(
                                     child: CircleAvatar(
                                       backgroundColor:
-                                          Color(0xFF1cbb7c).withOpacity(0.5),
+                                          const Color(0xFF1cbb7c).withOpacity(0.5),
                                       radius: 90,
                                       child: ClipRRect(
                                         borderRadius:
