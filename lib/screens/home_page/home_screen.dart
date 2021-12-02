@@ -1,14 +1,18 @@
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_firebase_crud_project/models/user_model.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/shared/loading.dart';
 import 'package:flutter_firebase_crud_project/theme/theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:image_picker/image_picker.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,6 +24,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // ! Handeling Image
+  XFile? _image;
+  String imagePath = "";
+  String imageName = "";
+  String? downloadURL;
+
   // ! Loading
   bool loading = false;
 
@@ -162,6 +172,10 @@ class _HomeScreenState extends State<HomeScreen> {
           .update({'firstName': fName, 'lastName': lName});
     }
 
+    // ! Media Query
+    Size size = MediaQuery.of(context).size;
+
+    // ! Scaffold UI
     return loading
         ? const Loading()
         : Scaffold(
@@ -517,6 +531,33 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 ),
+                                Positioned(
+                                  top: 130,
+                                  right: 105,
+                                  child: InkWell(
+                                    onTap: () {
+                                      _showSelectedImageDialog();
+                                    },
+                                    child: SizedBox(
+                                      child: CircleAvatar(
+                                        backgroundColor:
+                                            Colors.grey.withOpacity(0.5),
+                                        radius: size.width / 25.0,
+                                        child: Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 4.0, bottom: 2),
+                                            child: FaIcon(
+                                              FontAwesomeIcons.edit,
+                                              size: size.width / 22.5,
+                                              color: Colors.grey.shade800,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -528,5 +569,141 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           );
+  }
+
+  Future updateProfileImage(String filePath, String fileName, String uid,
+      UserModel userModel, User user) async {
+    File file = File(filePath);
+    try {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child(loggedInUser.uid!)
+          .child(loggedInUser.uid!);
+      await ref.putFile(file).then((TaskSnapshot taskSnapshot) {
+        if (taskSnapshot.state == TaskState.success) {
+          taskSnapshot.ref.getDownloadURL().then((downloadURL) {
+            FirebaseFirestore.instance
+                .collection("users")
+                .doc(loggedInUser.uid)
+                .update({"profileImagePath": downloadURL});
+            Fluttertoast.showToast(msg: "Profile Image Updated!");
+            loading = false;
+            Navigator.pushNamed(context, HomeScreen.id);
+          });
+        }
+      });
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Image could not be uploaded!");
+    }
+  }
+
+  Function? _showSelectedImageDialog() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return CupertinoActionSheet(
+          title: const Text("Choose Photo"),
+          actions: [
+            _image == null
+                ? const Icon(
+                    Icons.account_circle_sharp,
+                    size: 120,
+                    color: Color(0xffcdd8dd),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 60,
+                      child: _image == null
+                          ? Image.asset('assets/images/transparent.png')
+                          : Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFf3f3f3),
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.contain,
+                                  image: FileImage(
+                                    File(
+                                      _image!.path,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                    ),
+                  ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                _handleImage(source: ImageSource.camera);
+              },
+              child: const Text(
+                "Take Photo",
+              ),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                _handleImage(source: ImageSource.gallery);
+              },
+              child: const Text(
+                "Choose From Gallery",
+              ),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                setState(() {
+                  _image = null;
+                  imagePath = "";
+                });
+                Navigator.pop(context);
+                _showSelectedImageDialog();
+              },
+              child: const Text(
+                "Remove Photo",
+              ),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                setState(() {
+                  Navigator.pop(context);
+                  loading = true;
+                });
+                updateProfileImage(imagePath, imageName, loggedInUser.uid!,
+                    loggedInUser, user!);
+              },
+              child: const Text(
+                "Upload Photo",
+                style: TextStyle(color: Color(0xFF1cbb7c)),
+              ),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text(
+              "Cancel",
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+            onPressed: () {
+              setState(() {});
+              Navigator.pop(context);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  _handleImage({required ImageSource source}) async {
+    Navigator.pop(context);
+    XFile? imageFile = await ImagePicker().pickImage(source: source);
+    if (imageFile != null) {
+      setState(() {
+        _image = imageFile;
+        imagePath = _image!.path;
+        imageName = _image!.name;
+        _showSelectedImageDialog();
+      });
+    }
   }
 }

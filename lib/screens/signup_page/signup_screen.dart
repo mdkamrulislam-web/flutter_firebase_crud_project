@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/models/user_model.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
+import 'package:flutter_firebase_crud_project/screens/login_page/login_screen.dart';
 import 'package:flutter_firebase_crud_project/shared/loading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -698,6 +699,8 @@ class _SignupScreenState extends State<SignupScreen> {
         return CupertinoActionSheet(
           title: const Text("Choose Photo"),
           actions: [
+            
+
             CupertinoActionSheetAction(
               onPressed: () {
                 _handleImage(source: ImageSource.camera);
@@ -771,6 +774,7 @@ class _SignupScreenState extends State<SignupScreen> {
             e.toString(),
           ),
         );
+        Navigator.pushNamed(context, LoginScreen.id);
       });
     }
   }
@@ -785,6 +789,9 @@ class _SignupScreenState extends State<SignupScreen> {
     } else if (e ==
         "[firebase_auth/email-already-in-use] The email address is already in use by another account.") {
       return "The email address is already in use by another account.";
+    } else if (e ==
+        "[firebase_auth/network-request-failed] A network error (such as timeout, interrupted connection or unreachable host) has occurred.") {
+      return "Please check your internet connection!";
     } else {
       return "";
     }
