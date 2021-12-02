@@ -245,15 +245,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SizedBox(
-                            height: height * 0.43,
+                            height: height * 0.53,
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
                                 Positioned(
+                                  // top: 130,
                                   bottom: 0,
                                   left: 0,
                                   right: 0,
                                   child: Container(
+                                    height: height / 2.5,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(30),
                                       color: theme.focusColor == Colors.white
@@ -261,12 +263,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                           : Colors.grey.shade200,
                                     ),
                                     child: Column(
+                                      // mainAxisAlignment:
+                                      //     MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         const SizedBox(
-                                          height: 80,
+                                          height: 110,
                                         ),
                                         Text(
                                           "${loggedInUser.firstName ?? "Loading..."} ${loggedInUser.lastName ?? ""}",
+                                          textAlign: TextAlign.center,
                                           style: const TextStyle(
                                             color: Color(0xFF1cbb7c),
                                             fontSize: 37,
@@ -278,6 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         Text(
                                           loggedInUser.email ?? "",
+                                          textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color:
                                                 theme.focusColor == Colors.white
@@ -501,39 +509,45 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Icons.settings,
                                       size: 30,
                                     ),
-                                    color: const Color(0xFF1cbb7c),
+                                    color: const Color(0xFF1cbb7c)
+                                        .withOpacity(0.8),
                                   ),
                                 ),
                                 Positioned(
-                                  top: 20,
                                   left: 10,
                                   right: 10,
                                   child: Center(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(200),
-                                      child: loggedInUser.profileImagePath ==
-                                              null
-                                          ? const Loading()
-                                          : CachedNetworkImage(
-                                              width: 150,
-                                              height: 150,
-                                              fit: BoxFit.fitWidth,
-                                              imageUrl: loggedInUser
-                                                  .profileImagePath!,
-                                              placeholder: (context, url) =>
-                                                  const CircularProgressIndicator(
-                                                strokeWidth: 4.0,
+                                    child: CircleAvatar(
+                                      backgroundColor:
+                                          Color(0xFF1cbb7c).withOpacity(0.5),
+                                      radius: 90,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(200),
+                                        child: loggedInUser.profileImagePath ==
+                                                null
+                                            ? const Loading()
+                                            : CachedNetworkImage(
+                                                width: 150,
+                                                height: 150,
+                                                fit: BoxFit.cover,
+                                                imageUrl: loggedInUser
+                                                    .profileImagePath!,
+                                                placeholder: (context, url) =>
+                                                    const CircularProgressIndicator(
+                                                  strokeWidth: 4.0,
+                                                ),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
                                               ),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      const Icon(Icons.error),
-                                            ),
+                                      ),
                                     ),
                                   ),
                                 ),
                                 Positioned(
-                                  top: 130,
-                                  right: 105,
+                                  top: 140,
+                                  right: 95,
                                   child: InkWell(
                                     onTap: () {
                                       _showSelectedImageDialog();
@@ -541,7 +555,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: SizedBox(
                                       child: CircleAvatar(
                                         backgroundColor:
-                                            Colors.grey.withOpacity(0.5),
+                                            Colors.white.withOpacity(0.6),
                                         radius: size.width / 25.0,
                                         child: Center(
                                           child: Padding(
@@ -659,7 +673,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _showSelectedImageDialog();
               },
               child: const Text(
-                "Remove Photo",
+                "Unselect Photo",
               ),
             ),
             CupertinoActionSheetAction(
