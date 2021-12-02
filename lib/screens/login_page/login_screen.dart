@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_crud_project/models/user_secure_storage.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/forgot_password_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/signup_page/signup_screen.dart';
@@ -96,6 +97,20 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  Future init() async {
+    final email = await UserSecureStorage.getUserEmail() ?? '';
+    setState(() {
+      emailController.text = email;
+    });
+    // print(email);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     Size size = MediaQuery.of(context).size;
@@ -134,6 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
         filled: true,
       ),
       autofocus: false,
+      // ignore: unnecessary_null_comparison
       controller: emailController,
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
@@ -219,8 +235,10 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     // ! Login Button
     final loginButton = ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
         if (_formKey.currentState!.validate()) {
+          await UserSecureStorage.setUserEmail(emailController.text);
+
           setState(() {
             loading = true;
           });

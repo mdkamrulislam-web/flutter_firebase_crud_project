@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
       },
       child: GetMaterialApp(
         // ! Theme Settings
-        theme: CustomTheme.darkTheme,
+        theme: CustomTheme.lightTheme,
         darkTheme: CustomTheme.darkTheme,
         themeMode: currentTheme.currentTheme,
         debugShowCheckedModeBanner: false,

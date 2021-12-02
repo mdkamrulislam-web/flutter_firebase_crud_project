@@ -60,6 +60,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
 
+  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -699,8 +701,6 @@ class _SignupScreenState extends State<SignupScreen> {
         return CupertinoActionSheet(
           title: const Text("Choose Photo"),
           actions: [
-            
-
             CupertinoActionSheetAction(
               onPressed: () {
                 _handleImage(source: ImageSource.camera);

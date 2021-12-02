@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
         filled: true,
       ),
       autofocus: false,
-      controller: newFirstNameController,
+      controller: newFirstNameController..text = loggedInUser.firstName ?? '',
       keyboardType: TextInputType.name,
       validator: (value) {
         RegExp regex = RegExp(r'^.{2,}$');
@@ -144,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
         filled: true,
       ),
       autofocus: false,
-      controller: newLastNameController,
+      controller: newLastNameController..text = loggedInUser.lastName ?? '',
       keyboardType: TextInputType.name,
       validator: (value) {
         RegExp regex = RegExp(r'^.{2,}$');
@@ -522,8 +522,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   right: 10,
                                   child: Center(
                                     child: CircleAvatar(
-                                      backgroundColor:
-                                          const Color(0xFF1cbb7c).withOpacity(0.5),
+                                      backgroundColor: const Color(0xFF1cbb7c)
+                                          .withOpacity(0.5),
                                       radius: 90,
                                       child: ClipRRect(
                                         borderRadius:
