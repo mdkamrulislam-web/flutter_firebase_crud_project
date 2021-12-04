@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/models/user_secure_storage.dart';
+import 'package:flutter_firebase_crud_project/provider/google_sign_in.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/forgot_password_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/signup_page/signup_screen.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_firebase_crud_project/theme/theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:flag/flag.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -297,7 +299,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     // ! Sign Up with Google Button
     final signUpWithGoogleButton = ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        final provider =
+            Provider.of<GoogleSignInProvider>(context, listen: false);
+        provider
+            .googleLogin()
+            .then((value) => Navigator.pushNamed(context, HomeScreen.id));
+      },
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Row(

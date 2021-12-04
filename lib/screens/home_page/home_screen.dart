@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_firebase_crud_project/models/user_model.dart';
+import 'package:flutter_firebase_crud_project/provider/google_sign_in.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/shared/loading.dart';
@@ -13,6 +14,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -174,6 +176,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // ! Media Query
     Size size = MediaQuery.of(context).size;
+    String? userFirstName = loggedInUser.firstName ?? user!.displayName;
+    String? userEmail = loggedInUser.email ?? user!.email;
+    String? userProfileImageURL =
+        loggedInUser.profileImagePath ?? user!.photoURL;
 
     // ! Scaffold UI
     return loading
@@ -219,10 +225,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 16.0, right: 8),
                   child: IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       setState(() {
                         loading = true;
                       });
+                      final provider = Provider.of<GoogleSignInProvider>(
+                          context,
+                          listen: false);
+                      provider.logout();
                       Navigator.pushNamed(context, LoginScreen.id);
                       FirebaseAuth.instance.signOut().then((value) => {
                             Fluttertoast.showToast(msg: "Logged Out!"),
@@ -250,7 +260,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               fit: StackFit.expand,
                               children: [
                                 Positioned(
-                                  // top: 130,
                                   bottom: 0,
                                   left: 0,
                                   right: 0,
@@ -262,103 +271,109 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ? Colors.grey.shade800
                                           : Colors.grey.shade200,
                                     ),
-                                    child: Column(
-                                      // mainAxisAlignment:
-                                      //     MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const SizedBox(
-                                          height: 110,
-                                        ),
-                                        Text(
-                                          "${loggedInUser.firstName ?? "Loading..."} ${loggedInUser.lastName ?? ""}",
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            color: Color(0xFF1cbb7c),
-                                            fontSize: 37,
-                                            fontWeight: FontWeight.bold,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const SizedBox(
+                                            height: 100,
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          loggedInUser.email ?? "",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color:
-                                                theme.focusColor == Colors.white
-                                                    ? Colors.grey.shade400
-                                                    : Colors.black54,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
+                                          Text(
+                                            "${userFirstName ?? "Loading..."} ${loggedInUser.lastName ?? ""}",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              color: Color(0xFF1cbb7c),
+                                              fontSize: 37,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            // loggedInUser.email
+                                            userEmail ?? "",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: theme.focusColor ==
+                                                      Colors.white
+                                                  ? Colors.grey.shade400
+                                                  : Colors.black54,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
 
-                                        // ! Delete Button
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 16.0),
-                                          child: ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                theme.focusColor == Colors.white
-                                                    ? Colors.grey.shade300
-                                                    : Colors.red,
+                                          // ! Delete Button
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 16.0),
+                                            child: ElevatedButton(
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                  theme.focusColor ==
+                                                          Colors.white
+                                                      ? Colors.grey.shade300
+                                                      : Colors.red,
+                                                ),
                                               ),
-                                            ),
-                                            onPressed: () async {
-                                              setState(() {
-                                                loading = true;
-                                              });
-                                              await FirebaseStorage.instance
-                                                  .ref()
-                                                  .child(loggedInUser.uid!)
-                                                  .child(loggedInUser.uid!)
-                                                  .delete()
-                                                  .then((value) => {
-                                                        Fluttertoast.showToast(
-                                                            msg:
-                                                                "Image Deleted!"),
-                                                      });
-                                              await FirebaseFirestore.instance
-                                                      .collection("users")
-                                                      .doc(loggedInUser.uid)
-                                                      .delete()
-                                                      .then((value) {
-                                                    Navigator.pushNamed(context,
-                                                        LoginScreen.id);
-                                                    Fluttertoast.showToast(
-                                                        msg:
-                                                            "Your Accout is Deleted!");
-                                                  }) ??
-                                                  '';
-                                              await FirebaseAuth
-                                                  .instance.currentUser!
-                                                  .delete();
-                                            },
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: Text(
-                                                "deleteProfile".tr,
-                                                style: TextStyle(
-                                                    color: theme.focusColor ==
-                                                            Colors.white
-                                                        ? Colors.red
-                                                        : Colors.grey.shade300,
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.w900),
+                                              onPressed: () async {
+                                                setState(() {
+                                                  loading = true;
+                                                });
+                                                await FirebaseStorage.instance
+                                                    .ref()
+                                                    .child(loggedInUser.uid!)
+                                                    .child(loggedInUser.uid!)
+                                                    .delete()
+                                                    .then((value) => {
+                                                          Fluttertoast.showToast(
+                                                              msg:
+                                                                  "Image Deleted!"),
+                                                        });
+                                                await FirebaseFirestore.instance
+                                                        .collection("users")
+                                                        .doc(loggedInUser.uid)
+                                                        .delete()
+                                                        .then((value) {
+                                                      Navigator.pushNamed(
+                                                          context,
+                                                          LoginScreen.id);
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "Your Accout is Deleted!");
+                                                    }) ??
+                                                    '';
+                                                await FirebaseAuth
+                                                    .instance.currentUser!
+                                                    .delete();
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                child: Text(
+                                                  "deleteProfile".tr,
+                                                  style: TextStyle(
+                                                      color: theme.focusColor ==
+                                                              Colors.white
+                                                          ? Colors.red
+                                                          : Colors
+                                                              .grey.shade300,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w900),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -530,13 +545,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                             BorderRadius.circular(200),
                                         child: loggedInUser.profileImagePath ==
                                                 null
-                                            ? const Loading()
-                                            : CachedNetworkImage(
+                                            ? CachedNetworkImage(
                                                 width: 150,
                                                 height: 150,
                                                 fit: BoxFit.cover,
-                                                imageUrl: loggedInUser
-                                                    .profileImagePath!,
+                                                imageUrl: userProfileImageURL!,
                                                 placeholder: (context, url) =>
                                                     const CircularProgressIndicator(
                                                   strokeWidth: 4.0,
@@ -544,7 +557,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         const Icon(Icons.error),
-                                              ),
+                                              )
+                                            : const Loading(),
                                       ),
                                     ),
                                   ),

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_firebase_crud_project/provider/google_sign_in.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/splash_screen/splash.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_firebase_crud_project/screens/login_page/forgot_password
 import 'package:flutter_firebase_crud_project/screens/signup_page/terms_conditions_screen.dart';
 import 'package:flutter_firebase_crud_project/theme/theme.dart';
 import 'package:flutter_firebase_crud_project/l10n/locale_string.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,28 +54,31 @@ class _MyAppState extends State<MyApp> {
           FocusManager.instance.primaryFocus!.unfocus();
         }
       },
-      child: GetMaterialApp(
-        // ! Theme Settings
-        theme: CustomTheme.lightTheme,
-        darkTheme: CustomTheme.darkTheme,
-        themeMode: currentTheme.currentTheme,
-        debugShowCheckedModeBanner: false,
-        initialRoute: Splash.id,
-
-        routes: {
-          Splash.id: (context) => const Splash(),
-          LoginScreen.id: (context) => const LoginScreen(),
-          ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
-          SignupScreen.id: (context) => const SignupScreen(),
-          InfoScreen.id: (context) => const InfoScreen(),
-          TermsConditionsScreen.id: (context) => const TermsConditionsScreen(),
-          HomeScreen.id: (context) => const HomeScreen(),
-        },
-
-        title: 'Login Signup Demo',
-
-        translations: LocaleString(),
-        locale: const Locale('en', 'US'),
+      child: ChangeNotifierProvider(
+        create:(context) => GoogleSignInProvider(),
+        child: GetMaterialApp(
+          // ! Theme Settings
+          theme: CustomTheme.lightTheme,
+          darkTheme: CustomTheme.darkTheme,
+          themeMode: currentTheme.currentTheme,
+          debugShowCheckedModeBanner: false,
+          initialRoute: Splash.id,
+      
+          routes: {
+            Splash.id: (context) => const Splash(),
+            LoginScreen.id: (context) => const LoginScreen(),
+            ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
+            SignupScreen.id: (context) => const SignupScreen(),
+            InfoScreen.id: (context) => const InfoScreen(),
+            TermsConditionsScreen.id: (context) => const TermsConditionsScreen(),
+            HomeScreen.id: (context) => const HomeScreen(),
+          },
+      
+          title: 'Login Signup Demo',
+      
+          translations: LocaleString(),
+          locale: const Locale('en', 'US'),
+        ),
       ),
     );
   }
