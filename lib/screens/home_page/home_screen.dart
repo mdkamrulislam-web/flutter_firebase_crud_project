@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
         filled: true,
       ),
       autofocus: false,
-      controller: newFirstNameController..text = loggedInUser.firstName ?? '',
+      controller: newFirstNameController,
       keyboardType: TextInputType.name,
       validator: (value) {
         RegExp regex = RegExp(r'^.{2,}$');
@@ -146,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
         filled: true,
       ),
       autofocus: false,
-      controller: newLastNameController..text = loggedInUser.lastName ?? '',
+      controller: newLastNameController,
       keyboardType: TextInputType.name,
       validator: (value) {
         RegExp regex = RegExp(r'^.{2,}$');
@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String? userFirstName = loggedInUser.firstName ?? user!.displayName;
     String? userEmail = loggedInUser.email ?? user!.email;
     String? userProfileImageURL =
-        loggedInUser.profileImagePath ?? user!.photoURL;
+        user!.photoURL ?? loggedInUser.profileImagePath;
 
     // ! Scaffold UI
     return loading
@@ -543,22 +543,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(200),
-                                        child: loggedInUser.profileImagePath ==
-                                                null
-                                            ? CachedNetworkImage(
+                                        child: userProfileImageURL == null?
+                                             const Loading():CachedNetworkImage(
                                                 width: 150,
                                                 height: 150,
                                                 fit: BoxFit.cover,
-                                                imageUrl: userProfileImageURL!,
+                                                imageUrl:
+                                                    userProfileImageURL,
                                                 placeholder: (context, url) =>
                                                     const CircularProgressIndicator(
                                                   strokeWidth: 4.0,
                                                 ),
                                                 errorWidget:
                                                     (context, url, error) =>
-                                                        const Icon(Icons.error),
-                                              )
-                                            : const Loading(),
+                                                        const Loading(),
+                                              ),
                                       ),
                                     ),
                                   ),

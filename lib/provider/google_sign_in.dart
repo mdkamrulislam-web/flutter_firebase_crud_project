@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,6 +29,14 @@ class GoogleSignInProvider extends ChangeNotifier {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
+
+      await FirebaseFirestore.instance.collection("users").doc(user.id).set({
+        "firstName": user.displayName,
+        "lastName": "",
+        "email": user.email,
+        "uid": user.id,
+        "profileImagePath": user.photoUrl,
+      });
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
     }

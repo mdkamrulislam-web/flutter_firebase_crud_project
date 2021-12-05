@@ -60,8 +60,6 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
 
-  
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -293,7 +291,7 @@ class _SignupScreenState extends State<SignupScreen> {
         color: theme.focusColor == Colors.white ? Colors.white : Colors.black,
       ),
       cursorColor: const Color(0xFF1cbb7c),
-      obscureText: _isHidden,
+      obscureText: _isConPassHidden,
       decoration: InputDecoration(
         labelText: "confirmPass".tr,
         floatingLabelStyle: const TextStyle(
