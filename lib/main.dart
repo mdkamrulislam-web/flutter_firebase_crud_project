@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_firebase_crud_project/provider/google_sign_in.dart';
+import 'package:flutter_firebase_crud_project/screens/chat_screen/chat_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/splash_screen/splash.dart';
 import 'package:get/get.dart';
@@ -55,7 +56,7 @@ class _MyAppState extends State<MyApp> {
         }
       },
       child: ChangeNotifierProvider(
-        create:(context) => GoogleSignInProvider(),
+        create: (context) => GoogleSignInProvider(),
         child: GetMaterialApp(
           // ! Theme Settings
           theme: CustomTheme.lightTheme,
@@ -63,19 +64,21 @@ class _MyAppState extends State<MyApp> {
           themeMode: currentTheme.currentTheme,
           debugShowCheckedModeBanner: false,
           initialRoute: Splash.id,
-      
+
           routes: {
             Splash.id: (context) => const Splash(),
             LoginScreen.id: (context) => const LoginScreen(),
             ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
             SignupScreen.id: (context) => const SignupScreen(),
             InfoScreen.id: (context) => const InfoScreen(),
-            TermsConditionsScreen.id: (context) => const TermsConditionsScreen(),
+            TermsConditionsScreen.id: (context) =>
+                const TermsConditionsScreen(),
             HomeScreen.id: (context) => const HomeScreen(),
+            ChatScreen.id: (context) => const ChatScreen(),
           },
-      
+
           title: 'Login Signup Demo',
-      
+
           translations: LocaleString(),
           locale: const Locale('en', 'US'),
         ),

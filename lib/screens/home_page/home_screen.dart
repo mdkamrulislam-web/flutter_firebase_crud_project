@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_firebase_crud_project/models/user_model.dart';
 import 'package:flutter_firebase_crud_project/provider/google_sign_in.dart';
+import 'package:flutter_firebase_crud_project/screens/chat_screen/chat_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/shared/loading.dart';
@@ -14,6 +15,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:image_picker/image_picker.dart';
+// import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -176,10 +178,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // ! Media Query
     Size size = MediaQuery.of(context).size;
+
     String? userFirstName = loggedInUser.firstName ?? user!.displayName;
     String? userEmail = loggedInUser.email ?? user!.email;
     String? userProfileImageURL =
         user!.photoURL ?? loggedInUser.profileImagePath;
+
+    // ! ModalProgressHUD
+    bool showSpinner = false;
 
     // ! Scaffold UI
     return loading
@@ -543,13 +549,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(200),
-                                        child: userProfileImageURL == null?
-                                             const Loading():CachedNetworkImage(
+                                        child: userProfileImageURL == null
+                                            ? const Loading()
+                                            : CachedNetworkImage(
                                                 width: 150,
                                                 height: 150,
                                                 fit: BoxFit.cover,
-                                                imageUrl:
-                                                    userProfileImageURL,
+                                                imageUrl: userProfileImageURL,
                                                 placeholder: (context, url) =>
                                                     const CircularProgressIndicator(
                                                   strokeWidth: 4.0,
@@ -590,6 +596,49 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ],
+                            ),
+                          ),
+                        ),
+                        // ! Chat Button
+
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                theme.focusColor == Colors.white
+                                    ? Colors.grey.shade300
+                                    : Colors.blue,
+                              ),
+                            ),
+                            onPressed: () async {
+                              setState(() {
+                                loading = true;
+                              });
+                              try {
+                                if (FirebaseAuth.instance.currentUser != null) {
+                                  Navigator.pushNamed(context, ChatScreen.id);
+                                }
+                                setState(() {
+                                  loading = false;
+                                });
+                              } catch (e) {
+                                Fluttertoast.showToast(
+                                  msg: e.toString(),
+                                );
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Text(
+                                "Chat",
+                                style: TextStyle(
+                                    color: theme.focusColor == Colors.white
+                                        ? Colors.blue
+                                        : Colors.grey.shade300,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w900),
+                              ),
                             ),
                           ),
                         ),
