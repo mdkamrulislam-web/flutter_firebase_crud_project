@@ -12,8 +12,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         height: MediaQuery.of(context).size.height,
+        child: const Center(
+          child: Text(
+            "User Profile",
+          ),
+        ),
       ),
     );
   }

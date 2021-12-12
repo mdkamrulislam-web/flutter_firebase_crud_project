@@ -84,7 +84,11 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
       body: const SafeArea(
-        child: Text("acascas"),
+        child: Center(
+          child: Text(
+            "Chat",
+          ),
+        ),
       ),
     );
   }

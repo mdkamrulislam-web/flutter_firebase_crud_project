@@ -155,7 +155,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 height: 20,
               ),
               // ignore: unnecessary_null_comparison
-              userMap != null
+              userMap['firstName'] != null
                   ? Container(
                       // height: 200,
                       decoration: BoxDecoration(
@@ -165,7 +165,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         leading: ClipRRect(
                           borderRadius: BorderRadius.circular(50),
                           child: CachedNetworkImage(
-                            imageUrl: userMap['profileImagePath'],
+                            imageUrl: userMap['profileImagePath'] ??
+                                "assets/images/youth.png",
                           ),
                         ),
                         title: Text(
