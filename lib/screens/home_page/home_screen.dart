@@ -9,6 +9,7 @@ import 'package:flutter_firebase_crud_project/provider/google_sign_in.dart';
 import 'package:flutter_firebase_crud_project/screens/chat_screen/chat_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_crud_project/screens/search_screen.dart/search_screen.dart';
 import 'package:flutter_firebase_crud_project/shared/loading.dart';
 import 'package:flutter_firebase_crud_project/theme/theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -184,19 +185,23 @@ class _HomeScreenState extends State<HomeScreen> {
     String? userProfileImageURL =
         user!.photoURL ?? loggedInUser.profileImagePath;
 
-    // ! ModalProgressHUD
-    bool showSpinner = false;
-
     // ! Scaffold UI
     return loading
         ? const Loading()
         : Scaffold(
             appBar: AppBar(
-              leading: const Padding(
-                padding: EdgeInsets.only(top: 16.0),
-                child: Icon(
-                  Icons.arrow_back_ios_new_sharp,
-                  color: Colors.transparent,
+              leading: Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      Navigator.pushNamed(context, SearchScreen.id);
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.search,
+                    color: Color(0xFF1cbb7c),
+                  ),
                 ),
               ),
               elevation: 0,
@@ -617,7 +622,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               });
                               try {
                                 if (FirebaseAuth.instance.currentUser != null) {
-                                  Navigator.pushNamed(context, ChatScreen.id);
+                                  await Navigator.pushNamed(
+                                      context, ChatScreen.id);
                                 }
                                 setState(() {
                                   loading = false;

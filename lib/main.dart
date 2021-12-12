@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_firebase_crud_project/provider/google_sign_in.dart';
 import 'package:flutter_firebase_crud_project/screens/chat_screen/chat_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
+import 'package:flutter_firebase_crud_project/screens/search_screen.dart/search_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/splash_screen/splash.dart';
 import 'package:get/get.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/login_screen.dart';
@@ -75,6 +76,7 @@ class _MyAppState extends State<MyApp> {
                 const TermsConditionsScreen(),
             HomeScreen.id: (context) => const HomeScreen(),
             ChatScreen.id: (context) => const ChatScreen(),
+            SearchScreen.id: (context) => const SearchScreen(),
           },
 
           title: 'Login Signup Demo',
