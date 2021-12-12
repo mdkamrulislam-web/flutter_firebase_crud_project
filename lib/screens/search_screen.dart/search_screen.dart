@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_crud_project/screens/chat_screen/chat_screen.dart';
+import 'package:flutter_firebase_crud_project/screens/user_profile/user_profile.dart';
 import 'package:flutter_firebase_crud_project/theme/theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -153,10 +156,41 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               // ignore: unnecessary_null_comparison
               userMap != null
-                  ? ListTile(
-                      title: Text(
-                          "${userMap['firstName'] ?? ""} ${userMap['lastName'] ?? ""}"),
-                      subtitle: Text("${userMap["email"] ?? ""}"),
+                  ? Container(
+                      // height: 200,
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: CachedNetworkImage(
+                            imageUrl: userMap['profileImagePath'],
+                          ),
+                        ),
+                        title: Text(
+                          "${userMap['firstName'] ?? ""} ${userMap['lastName'] ?? ""}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey.shade900,
+                          ),
+                        ),
+                        subtitle: Text(
+                          "${userMap["email"] ?? ""}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.pushNamed(context, ProfileScreen.id);
+                        },
+                        trailing: IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, ChatScreen.id);
+                          },
+                          icon: const Icon(Icons.chat),
+                        ),
+                      ),
                     )
                   : Container(),
             ],

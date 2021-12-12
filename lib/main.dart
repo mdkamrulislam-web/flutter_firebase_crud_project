@@ -6,6 +6,7 @@ import 'package:flutter_firebase_crud_project/screens/chat_screen/chat_screen.da
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/search_screen.dart/search_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/splash_screen/splash.dart';
+import 'package:flutter_firebase_crud_project/screens/user_profile/user_profile.dart';
 import 'package:get/get.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/login_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/signup_page/info_screen.dart';
@@ -77,6 +78,7 @@ class _MyAppState extends State<MyApp> {
             HomeScreen.id: (context) => const HomeScreen(),
             ChatScreen.id: (context) => const ChatScreen(),
             SearchScreen.id: (context) => const SearchScreen(),
+            ProfileScreen.id: (context) => const ProfileScreen(),
           },
 
           title: 'Login Signup Demo',

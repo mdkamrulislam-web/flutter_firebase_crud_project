@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/theme/theme.dart';
 
-final _firestore = FirebaseFirestore.instance;
 User? loggedInUser;
 User? user = FirebaseAuth.instance.currentUser;
 

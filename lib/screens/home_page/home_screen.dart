@@ -6,7 +6,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_firebase_crud_project/models/user_model.dart';
 import 'package:flutter_firebase_crud_project/provider/google_sign_in.dart';
-import 'package:flutter_firebase_crud_project/screens/chat_screen/chat_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/screens/search_screen.dart/search_screen.dart';
@@ -601,50 +600,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ],
-                            ),
-                          ),
-                        ),
-                        // ! Chat Button
-
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                theme.focusColor == Colors.white
-                                    ? Colors.grey.shade300
-                                    : Colors.blue,
-                              ),
-                            ),
-                            onPressed: () async {
-                              setState(() {
-                                loading = true;
-                              });
-                              try {
-                                if (FirebaseAuth.instance.currentUser != null) {
-                                  await Navigator.pushNamed(
-                                      context, ChatScreen.id);
-                                }
-                                setState(() {
-                                  loading = false;
-                                });
-                              } catch (e) {
-                                Fluttertoast.showToast(
-                                  msg: e.toString(),
-                                );
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Text(
-                                "Chat",
-                                style: TextStyle(
-                                    color: theme.focusColor == Colors.white
-                                        ? Colors.blue
-                                        : Colors.grey.shade300,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w900),
-                              ),
                             ),
                           ),
                         ),
