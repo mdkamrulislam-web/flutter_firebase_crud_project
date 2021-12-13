@@ -15,7 +15,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -242,6 +241,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       final provider = Provider.of<GoogleSignInProvider>(
                           context,
                           listen: false);
+                      FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(loggedInUser.uid)
+                          .update({"status": "inactive"});
                       provider.logout();
                       Navigator.pushNamed(context, LoginScreen.id);
                       FirebaseAuth.instance.signOut().then((value) => {
@@ -352,9 +355,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         .doc(loggedInUser.uid)
                                                         .delete()
                                                         .then((value) {
-                                                      Navigator.pushNamed(
-                                                          context,
-                                                          LoginScreen.id);
                                                       Fluttertoast.showToast(
                                                           msg:
                                                               "Your Accout is Deleted!");
@@ -362,7 +362,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     '';
                                                 await FirebaseAuth
                                                     .instance.currentUser!
-                                                    .delete();
+                                                    .delete()
+                                                    .then((value) => {
+                                                          Navigator.pushNamed(
+                                                              context,
+                                                              LoginScreen.id),
+                                                        });
                                               },
                                               child: Padding(
                                                 padding:

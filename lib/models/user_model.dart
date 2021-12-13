@@ -4,6 +4,7 @@ class UserModel {
   String? firstName;
   String? lastName;
   String? profileImagePath;
+  String? status;
 
   UserModel({
     this.uid,
@@ -11,6 +12,7 @@ class UserModel {
     this.firstName,
     this.lastName,
     this.profileImagePath,
+    this.status,
   });
 
   // ! Receiving Data From Server
@@ -21,6 +23,7 @@ class UserModel {
       firstName: map['firstName'],
       lastName: map['lastName'],
       profileImagePath: map['profileImagePath'],
+      status: map['status'],
     );
   }
 
@@ -32,6 +35,7 @@ class UserModel {
       'firstName': firstName,
       'lastName': lastName,
       'profileImagePath': profileImagePath,
+      'status': status,
     };
   }
 }

@@ -9,6 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
   static const String id = 'search_screen';
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -163,8 +164,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           borderRadius: BorderRadius.circular(20)),
                       child: ListTile(
                         leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(200),
                           child: CachedNetworkImage(
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
                             imageUrl: userMap['profileImagePath'] ??
                                 "assets/images/youth.png",
                           ),
@@ -188,6 +192,12 @@ class _SearchScreenState extends State<SearchScreen> {
                         trailing: IconButton(
                           onPressed: () {
                             Navigator.pushNamed(context, ChatScreen.id);
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (_) => ChatScreen(
+
+                            //             )));
                           },
                           icon: const Icon(Icons.chat),
                         ),
@@ -223,11 +233,12 @@ class _SearchScreenState extends State<SearchScreen> {
       } else if (_search != userMap['firstName'] && _search.text != "") {
         Fluttertoast.showToast(msg: "No user found!");
       } else if (_search.text == "") {
-        Fluttertoast.showToast(msg: "Please enter an email address");
+        Fluttertoast.showToast(msg: "Please enter an email address or name");
       }
       userMap = {};
       // print(e.toString());
     }
+
     // ignore: avoid_print
     print(userMap);
   }

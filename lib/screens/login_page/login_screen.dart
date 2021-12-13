@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_crud_project/models/user_secure_storage.dart';
 import 'package:flutter_firebase_crud_project/provider/google_sign_in.dart';
+import 'package:flutter_firebase_crud_project/screens/chat_screen/chat_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/home_page/home_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/login_page/forgot_password_screen.dart';
 import 'package:flutter_firebase_crud_project/screens/signup_page/signup_screen.dart';
@@ -531,6 +533,10 @@ class _LoginScreenState extends State<LoginScreen> {
           .then((uid) => {
                 Fluttertoast.showToast(msg: "Logged In Successfully"),
                 Navigator.pushNamed(context, HomeScreen.id),
+                FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(loggedInUser!.uid)
+                    .update({"status": "active"}),
               })
           .catchError((e) {
         setState(() {

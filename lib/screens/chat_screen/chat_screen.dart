@@ -8,7 +8,9 @@ User? user = FirebaseAuth.instance.currentUser;
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
 
-  const ChatScreen({Key? key}) : super(key: key);
+  const ChatScreen({Key? key, required this.userName}) : super(key: key);
+  final String userName;
+  // print(userName);
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -37,6 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
         title: const Padding(
           padding: EdgeInsets.only(top: 16.0),
           child: Text(
-            "Group Chat",
+            "Chat",
             style: TextStyle(
               color: Color(0xFF1cbb7c),
               fontWeight: FontWeight.bold,
@@ -83,10 +86,34 @@ class _ChatScreenState extends State<ChatScreen> {
           // ! Back Button
         ],
       ),
-      body: const SafeArea(
-        child: Center(
-          child: Text(
-            "Chat",
+      body: Container(),
+      bottomNavigationBar: Container(
+        height: size.height / 10,
+        width: size.width,
+        color: Colors.grey.shade200,
+        alignment: Alignment.center,
+        child: SizedBox(
+          height: size.height / 12,
+          width: size.width / 1.1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                height: size.height / 12,
+                width: size.width / 1.3,
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.send_rounded,
+                size: size.width / 12,
+              ),
+            ],
           ),
         ),
       ),

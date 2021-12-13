@@ -822,6 +822,7 @@ class _SignupScreenState extends State<SignupScreen> {
             userModel.firstName = firstNameController.text;
             userModel.lastName = lastNameController.text;
             userModel.profileImagePath = downloadURL;
+            userModel.status = "active";
             firebaseFirestore.collection("users").doc(uid).set(
                   userModel.toMap(),
                 );

@@ -76,7 +76,9 @@ class _MyAppState extends State<MyApp> {
             TermsConditionsScreen.id: (context) =>
                 const TermsConditionsScreen(),
             HomeScreen.id: (context) => const HomeScreen(),
-            ChatScreen.id: (context) => const ChatScreen(),
+            ChatScreen.id: (context) => const ChatScreen(
+                  userName: "",
+                ),
             SearchScreen.id: (context) => const SearchScreen(),
             ProfileScreen.id: (context) => const ProfileScreen(),
           },
